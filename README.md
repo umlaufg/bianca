@@ -11,15 +11,9 @@ Images:
 | ![image](https://github.com/umlaufg/bianca/blob/main/docs/images/biancascreenshot1.PNG?raw=true) |
 |:--:|
 | A game running on Bianca |
-
 | ![image](https://github.com/umlaufg/bianca/blob/main/docs/images/biancascreenshot4.PNG?raw=true) |
-|:--:|
 | A game with a selection of choices |
-
 | ![image](https://github.com/umlaufg/bianca/blob/main/docs/images/biancascreenshot2.PNG?raw=true) |
-|:--:|
 | A prompt to load a .dvn game using a Discord message link |
-
 | ![image](https://github.com/umlaufg/bianca/blob/main/docs/images/biancascreenshot3.PNG?raw=true) |
-|:--:|
 | An error thrown by Bianca's compiler |
