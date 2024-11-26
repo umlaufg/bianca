@@ -12,7 +12,7 @@ In order to **set a background**, you may type:
 scene wumpus_house
 ```
 where `wumpus_house` is the name of the background you want to use.
-> See [here](http://localhost:63342/Bianca/preview/data-types.html#backgrounds)
+> See [here](./Data-Types.md#backgrounds)
 > on how to add a background to your script.
 
 ## Adding a character to the frame
@@ -36,7 +36,7 @@ with, and `100` is the x offset and `200` is the y offset.
 After a character is joined to the frame, you can change their sprite without 
 the need to specify the coordinates again.
 
-> See [here](http://localhost:63342/Bianca/preview/data-types.html#sprites)
+> See [here](./Data-Types.html#sprites)
 > on how to add a sprite to your script.
 
 ## Removing characters from the frame
