@@ -1,4 +1,4 @@
-[![](https://dcbadge.limes.pink/api/server/INVITE)](https://discord.gg/35Z2mXYRpv)
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/fcPkVv6Bwa)](https://discord.gg/fcPkVv6Bwa)
 
 # Bianca
 
