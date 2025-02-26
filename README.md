@@ -1,3 +1,5 @@
+[![](https://dcbadge.limes.pink/api/server/INVITE)](https://discord.gg/35Z2mXYRpv)
+
 # Bianca
 
 **Bianca** is a Visual Novel (VN) engine baked directly into a Discord message.
@@ -22,5 +24,3 @@ and choice-making.
 | *An error thrown by Bianca's compiler*                                                           |
 
 </div>
-
-<iframe src="https://discord.com/widget?id=1344165375306104864&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
