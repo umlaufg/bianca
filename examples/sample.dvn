@@ -1,0 +1,53 @@
+make Wumpus
+make Tux
+make Narrator
+
+bg forest_path = https://i.imgur.com/2GTOqGJ.jpeg
+bg forest_clearing = https://i.imgur.com/mMxnQHx.jpeg
+bg dark_forest = https://i.imgur.com/FGP76ex.jpeg
+bg forest_entrance = https://i.imgur.com/tTAQtot.jpeg
+
+# Set the initial background
+scene forest_path
+
+# Introduction
+say Narrator "You stand at the entrance to a dense forest. The path ahead splits into two directions."
+
+# Present the first choice
+choice "Go left" | "Go right" | "Turn back"
+say Narrator "Which way will you go?"
+
+# Handle the player's choice
+if selected eq "Go left"
+    jump left_path
+end
+if selected eq "Go right"
+    jump right_path
+end
+if selected eq "Turn back"
+    jump turn_back
+end
+
+# Label for the left path
+label left_path
+scene forest_clearing
+say Narrator "You take the left path and soon find yourself in a sunlit clearing."
+say Wumpus "Hello, traveler! Care to share a story?"
+jump ending
+
+# Label for the right path
+label right_path
+scene dark_forest
+say Narrator "You take the right path and find yourself in a shadowy part of the forest."
+say Tux "Beware! The shadows hide many secrets."
+jump ending
+
+# Label for turning back
+label turn_back
+scene forest_entrance
+say Narrator "You decide not to venture into the forest. Sometimes, it's best to play it safe."
+jump ending
+
+# Ending label
+label ending
+say Narrator "Your journey ends here. Thank you for playing!"
