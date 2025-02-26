@@ -1,3 +1,5 @@
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/fcPkVv6Bwa)](https://discord.gg/fcPkVv6Bwa)
+
 # Bianca
 
 **Bianca** is a Visual Novel (VN) engine baked directly into a Discord message.
