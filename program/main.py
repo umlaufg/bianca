@@ -7,7 +7,7 @@ from PIL import Image
 from io import BytesIO, StringIO
 
 # Compiler Version
-VERSION = "1.0"
+VERSION = "1.1"
 
 # Basic info required for loading the game/rendering frames
 class Compile_Data:
@@ -20,6 +20,8 @@ class Compile_Data:
 
         self.LINE_NUM = 0
         self.BOOLS = [] #
+        self.LABEL = ""
+        self.IS_EMPTY_LABEL = False
         self.WAIT = False
 
 # Where all variables and images will go
@@ -165,14 +167,20 @@ class LoadModal(BaseModal, title="Load Game"):
         await load_save_file(user_id, self.file.value, interaction)
         
 # Error handling
-def throw(sev, user_id, reason):
+def throw(sev, user_id, reason, **kwargs):
     message = instance[user_id]["message"]
     script = instance[user_id]["script"]
     game = instance[user_id]["game"]
-    line = script[game.LINE_NUM].decode("utf-8")
-    line = line.strip()
     
-    title = f"Woops! (line {game.LINE_NUM + 1})"
+    if "content" not in kwargs:
+        line = script[game.LINE_NUM].decode("utf-8")
+        line = line.strip()
+    else:
+        line = kwargs["content"]
+
+    title = "Woops!"
+    if game.LINE_NUM < len(script):
+        title += " " + f"(line {game.LINE_NUM + 1})"
     
     # Exceptions
     if sev == "e":
@@ -803,6 +811,9 @@ async def out(user_id):
     # Wait for user to click the next button
     game.WAIT = True
 
+    # Since there's something for the player to click, this label is not useless
+    game.IS_EMPTY_LABEL = False
+
 # TODO: Move all argument parsing to their respective functions
 # instead of processing them here
 async def parse(user_id, line):
@@ -823,15 +834,55 @@ async def parse(user_id, line):
         if word[0] == "end":
             game.BOOLS.pop(-1)
             return
+        # If we're inside a false if statement, append any child ifs as False
+        elif word[0] == "if" and not game.BOOLS[-1]:
+            game.BOOLS.append(False)
+            return
         # Skip if we're inside an if statement that was not triggered
         elif not game.BOOLS[-1]:
+            return
+
+    # If we're looking for a label:
+    if game.LABEL != "":
+        if word[0] == "label":
+            arg = word[1:]
+            arg = validate_args(user_id, arg, num=1)
+            name = arg[0]
+            if name == game.LABEL:
+                game.LABEL = ""
+        else:
             return
             
     match word[0]:
         # External file-related expressions
         case "import":
             pass
+            #arg = word[1:]
+            #name = arg[0]
+            #set_bg(user_id, name)
 
+        # Control-flow-related expressions
+        case "label":
+            arg = word[1:]
+            arg = validate_args(user_id, arg, num=1)
+            name = arg[0]
+            if name.replace("_", "").isalnum():
+                game.IS_EMPTY_LABEL = True
+            else:
+                throw("e", user_id, "invalid label name")
+        case "jump":
+            arg = word[1:]
+            arg = validate_args(user_id, arg, num=1)
+            name = arg[0]
+            if name.replace("_", "").isalnum():
+                if not game.IS_EMPTY_LABEL:
+                    game.LABEL = name
+                    game.LINE_NUM = 0
+                else:
+                    throw("e", user_id, "malformed label body")
+            else:
+                throw("e", user_id, "invalid label name")
+            
         # Variable-related expressions
         case "var":
             arg = line[len(word[0]):].split("=", 1)
@@ -921,12 +972,16 @@ async def run(user_id, **kwargs):
         while not game.WAIT and n < len(script):
             line = script[n].decode("utf-8")
             await parse(user_id, line)
-            n += 1
+            n = game.LINE_NUM + 1
             game.LINE_NUM = n
-        
-        if n == len(script) and cutoff:
-            await message.edit(view=None)
-            del instance[user_id]
+
+        if n == len(script):
+            if game.LABEL != "":
+                throw("e", user_id, f"label does not exist",
+                      content=f"jump {game.LABEL}")
+            elif cutoff:
+                await message.edit(view=None)
+                del instance[user_id]
             
     except Exception as e:
         arg = str(e).split("\n")
@@ -1030,5 +1085,16 @@ async def play(interaction: discord.Interaction, script: str) -> None:
           f"has started instance #{len(instance)}")
 
     await run(user_id)
+
+    # DEBUG
+    #tree = instance[user_id]["tree"]
+    #game = instance[user_id]["game"]
+    #print(tree.vars)
+    #print(tree.backgrounds)
+    #print()
+    #print(game.OUT_NAME)
+    #print(game.OUT_TEXT)
+    #print(game.OUT_BACKGROUND)
+    #print(game.OUT_SPRITES)
 
 client.run(TOKEN)
